@@ -15,7 +15,7 @@ const doCreate = function(req, res){
         projectName: req.body.ProjectName,
         contributors: req.body.Contributor,
         tasks: req.body.Task,
-        createdBy: req.body.CreatedBy,
+        createdBy: req.session.user._id,
         modifiedOn : Date.now()
         }, function( err, project ){
             if(err) {
