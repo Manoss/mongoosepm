@@ -62,4 +62,8 @@ router
   .get()
   .post();
 
+router
+  .route('/project/byuser/:userid')
+  .get(ctrlProject.byUser)
+
 module.exports = router;

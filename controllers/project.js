@@ -34,6 +34,50 @@ const doCreate = function(req, res){
     ); 
 };
 
+// GET Projects by UserID
+exports.byUser = function (req, res) {
+    console.log("Getting user projects");
+    if (req.params.userid){
+        Project.findByUserID(
+            req.params.userid,
+            function (err, projects) {
+                if(!err){
+                    console.log(projects);
+                    res.json(projects);
+                }else{
+                    console.log(err);
+                    res.json({"status":"error", "error":"Error finding projects"});
+                } 
+            }
+        )
+    }else{
+        console.log("No user id supplied");
+        res.json({"status":"error", "error":"No user id supplied"});
+    } 
+};
+
+// GET Projects by UserID
+const byUser = function (req, res) {
+    console.log("Getting user projects");
+    if (req.params.userid){
+        Project.findByUserID(
+            req.params.userid,
+            function (err, projects) {
+                if(!err){
+                    console.log(projects);
+                    res.json(projects);
+                }else{
+                    console.log(err);
+                    res.json({"status":"error", "error":"Error finding projects"});
+                } 
+            }
+        )
+    }else{
+        console.log("No user id supplied");
+        res.json({"status":"error", "error":"No user id supplied"});
+    }        
+};
+
 // GET Project page
 const index = function (req, res) {
     res.render('project-page')
@@ -42,5 +86,6 @@ const index = function (req, res) {
 module.exports = {
     create,
     doCreate,
+    byUser,
     index
 }
