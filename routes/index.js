@@ -50,7 +50,7 @@ router
 
 router
   .route('/project/:id')
-  .get();
+  .get(ctrlProject.displayInfo);
 
 router
   .route('/project/edit/:id')
