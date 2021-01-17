@@ -4,6 +4,8 @@ var User = mongoose.model('User');
 const create = function(req, res){
     res.render('user-form', {
         title: 'Create user',
+        name: "",
+        email: "",
         buttonText: "Join!"
     });
 }
@@ -80,7 +82,13 @@ const doLogin = function (req, res) {
                         };
                         req.session.loggedin = true;
                         console.log('Logged in user: ' + user);
-                        res.redirect('/user');
+                        User.updateOne(
+                            {_id:user._id},
+                            { $set: {lastLogin: Date.now()} },
+                            function(){
+                                res.redirect( '/user' );
+                            }
+                        );
                     }
                 } else {
                     res.redirect('/login?404=error');
@@ -92,6 +100,49 @@ const doLogin = function (req, res) {
     }
 }
 
+/*****************************************
+ * Update User
+ ****************************************/
+
+// GET user edit form
+const edit = function(req, res){
+    if (req.session.loggedin !== true){
+        res.redirect('/login');
+    }else{
+        res.render('user-form', {
+            title: 'Edit profile',
+            _id: req.session.user._id,
+            name: req.session.user.name,
+            email: req.session.user.email,
+            buttonText: "Save"
+        }); 
+    }
+};
+
+const doEdit = function(req, res) {
+    if (req.session.user._id) {
+        User.findById( req.session.user._id,
+            function (err, user) {
+                if(err){
+                    console.log(err);
+                    res.redirect( '/user?error=finding');
+                } else {
+                    user.name = req.body.FullName;
+                    user.email = req.body.Email;
+                    user.modifiedOn = Date.now();
+                    user.save(function (err) {
+                        if(!err){
+                            console.log('User updated: ' + req.body.FullName);
+                            req.session.user.name = req.body.FullName;
+                            req.session.user.email = req.body.Email;
+                            res.redirect( '/user' );
+                        } 
+                    });
+                } 
+            }
+        ); 
+    };
+};
 
 module.exports = {
     create,
@@ -99,5 +150,7 @@ module.exports = {
     index,
     indexPage,
     login,
-    doLogin
+    doLogin,
+    edit,
+    doEdit
 }

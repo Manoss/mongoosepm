@@ -20,8 +20,8 @@ router
 
 router
   .route('/user/edit')
-  .get()
-  .post();
+  .get(ctrlUser.edit)
+  .post(ctrlUser.doEdit);
 
 router
   .route('/user/delete')
