@@ -5,13 +5,13 @@ block content
   form(id="frmProjectProfile", method="post", action="")
     p
       label(for="ProjectName") Project name
-      input(type="text", name="ProjectName", id="ProjectName")
+      input(type="text", name="ProjectName", id="ProjectName", value="#{projectName}")
     p
       label(for="Contributor") Contributors
-      input(type="text", name="Contributor", id="Contributor")
+      input(type="text", name="Contributor", id="Contributor", value="#{contributors}")
     p
       label(for="Task") Tasks
-      input(type="text", name="Task", id="Task")
+      input(type="text", name="Task", id="Task", value="#{tasks}")
     p
       input(type="submit", value="#{buttonText}")
 

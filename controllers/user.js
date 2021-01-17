@@ -114,7 +114,7 @@ const edit = function(req, res){
             _id: req.session.user._id,
             name: req.session.user.name,
             email: req.session.user.email,
-            buttonText: "Save"
+            buttonText: "Update"
         }); 
     }
 };

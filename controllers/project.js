@@ -5,33 +5,40 @@ var Project = mongoose.model('Project');
 const create = function(req, res){
     res.render('project-form', {
         title: 'Create project',
+        projectName: '',
+        contributors: '',
+        tasks: '',
         buttonText: "Validate"
     });
 }
 
 // POST new project creation form
 const doCreate = function(req, res){
-    Project.create({
-        projectName: req.body.ProjectName,
-        contributors: req.body.Contributor,
-        tasks: req.body.Task,
-        createdBy: req.session.user._id,
-        modifiedOn : Date.now()
-        }, function( err, project ){
-            if(err) {
-                console.log(err);
-                if(err.code===11000) {
-                    res.redirect('/project/new?exists=true');
+    if (req.session.loggedin !== true){
+        res.redirect('/login');
+    }else{
+        Project.create({
+            projectName: req.body.ProjectName,
+            contributors: req.body.Contributor,
+            tasks: req.body.Task,
+            createdBy: req.session.user._id,
+            modifiedOn : Date.now()
+            }, function( err, project ){
+                if(err) {
+                    console.log(err);
+                    if(err.code===11000) {
+                        res.redirect('/project/new?exists=true');
+                    } else {
+                        res.redirect('/?error=true');
+                    }
                 } else {
-                    res.redirect('/?error=true');
+                    // Success
+                    console.log("Project created and saved: " + project);
+                    res.redirect('/user');
                 }
-            } else {
-                // Success
-                console.log("Project created and saved: " + project);
-                res.redirect('/user');
             }
-        }
-    ); 
+        );
+    } 
 };
 
 // GET Projects by UserID
@@ -66,7 +73,7 @@ const displayInfo = function(req, res) {
             Project.findById( req.params.id, function(err,project) {
                 if(err){
                     console.log(err);
-                    res.redirect('/user?404=project');
+                    res.redirect('/project?404=project');
                 }else{
                     console.log(project);
                     res.render('project-page', {
@@ -84,6 +91,59 @@ const displayInfo = function(req, res) {
     } 
 };
 
+/*****************************************
+ * Update Project
+ ****************************************/
+
+// GET project edit form
+const edit = function(req, res){
+    if (req.session.loggedin !== true){
+        res.redirect('/login');
+    }else{
+        Project.findById(req.params.id, function(err, project){
+            if(err){
+                console.log(err);
+                res.redirect('/project?404=project');
+            }else{
+                res.render('project-form', {
+                    title: 'Edit profile',
+                    _id: req.params.id,
+                    projectName: project.projectName,
+                    contributors: project.contributors,
+                    tasks: project.tasks,
+                    createdBy: project.createdBy,
+                    buttonText: "Update"
+                });
+            }     
+        })
+        
+    }
+};
+
+const doEdit = function(req, res) {
+    if (req.params.id) {
+        Project.findById(req.params.id,
+            function (err, project) {
+                if(err){
+                    console.log(err);
+                    res.redirect( '/project?error=finding');
+                } else {
+                    project.projectName = req.body.ProjectName;
+                    project.contributors = req.body.Contributor;
+                    project.tasks = req.body.Task;
+                    project.modifiedOn = Date.now();
+                    project.save(function (err) {
+                        if(!err){
+                            console.log('Project updated: ' + req.body.ProjectName);
+                            res.redirect( '/project/' + req.params.id );
+                        } 
+                    });
+                } 
+            }
+        ); 
+    };
+};
+
 // GET Project page
 const index = function (req, res) {
     res.render('project-page')
@@ -94,5 +154,7 @@ module.exports = {
     doCreate,
     byUser,
     displayInfo,
-    index
+    index,
+    edit,
+    doEdit
 }

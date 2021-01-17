@@ -54,8 +54,8 @@ router
 
 router
   .route('/project/edit/:id')
-  .get()
-  .post();
+  .get(ctrlProject.edit)
+  .post(ctrlProject.doEdit);
 
 router
   .route('/project/delete/:id')
