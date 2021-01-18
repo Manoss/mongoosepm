@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
+var Project = mongoose.model('Project');
 
 const create = function(req, res){
     res.render('user-form', {
@@ -144,6 +145,63 @@ const doEdit = function(req, res) {
     };
 };
 
+/*****************************************
+ * Delete User
+ ****************************************/
+
+// GET user delete confirmation form
+const confirmDelete = function(req, res){
+    res.render('user-delete-form', {
+        title: 'Delete account',
+        _id: req.session.user._id,
+        name: req.session.user.name,
+        email: req.session.user.email
+    }); 
+};
+
+// POST user delete form
+const doDelete = function(req, res) {
+    if (req.body._id) {
+        User.findByIdAndRemove(
+            req.body._id,
+            function (err, user) {
+                if(err){
+                    console.log(err);
+                    return res.redirect('/user?error=deleting');
+                }
+                /** Delete Projects */
+                Project.findByUserID(
+                    req.body._id,
+                    function (err, projects) {
+                        if(!err){
+                            console.log(projects);
+                            Project.deleteMany({createdBy: req.body._id}, (err, result)=> {
+                                if(err) {
+                                    console.log("Error Deleted Projects : " + err)
+                                }
+                                console.log("Count deleted documents : " + result.deletedCount);
+                            });
+                            
+                        }else{
+                            console.log(err);
+                            res.json({"status":"error", "error":"Error finding projects"});
+                        } 
+                    }
+                )
+                console.log("User deleted:", user);
+                clearSession(req.session, function () {
+                    res.redirect('/');
+                });
+            }
+        );
+    } 
+};
+
+var clearSession = function(session, callback){
+    session.destroy();
+    callback();
+};
+
 module.exports = {
     create,
     doCreate,
@@ -152,5 +210,8 @@ module.exports = {
     login,
     doLogin,
     edit,
-    doEdit
+    doEdit,
+    confirmDelete,
+    doDelete
+
 }

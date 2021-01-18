@@ -25,8 +25,8 @@ router
 
 router
   .route('/user/delete')
-  .get()
-  .post();
+  .get(ctrlUser.confirmDelete)
+  .post(ctrlUser.doDelete);
 
 router
   .route('/login')
