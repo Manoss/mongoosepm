@@ -144,6 +144,49 @@ const doEdit = function(req, res) {
     };
 };
 
+/*****************************************
+ * Delete Project
+ ****************************************/
+
+// GET user delete confirmation form
+const confirmDelete = function(req, res){
+    console.log("Project ID : " + req.params.id);
+    Project.findById(req.params.id, (err, project)=> {
+        if (!err) {
+            console.log("Project : " + project);
+            res.render('project-delete-form', {
+                title: 'Delete project',
+                _id: req.params.id,
+                projectName: project.projectName,
+                tasks: project.tasks,
+                contributors: project.contributors
+            }); 
+        }else{
+            console.log("Error Delete Project : " + err);
+            res.json(err);
+        }
+    });
+    
+};
+
+// POST project delete form
+const doDelete = function(req, res) {
+    if (req.body._id) {
+        Project.findByIdAndRemove(
+            req.body._id,
+            function (err, project) {
+                if(err){
+                    console.log(err);
+                    return res.redirect('/project?error=deleting');
+                }
+                console.log("Project deleted:", project);
+                res.redirect('/user');
+            }
+        );
+    } 
+};
+
+
 // GET Project page
 const index = function (req, res) {
     res.render('project-page')
@@ -156,5 +199,7 @@ module.exports = {
     displayInfo,
     index,
     edit,
-    doEdit
+    doEdit,
+    confirmDelete,
+    doDelete
 }

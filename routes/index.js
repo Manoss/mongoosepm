@@ -35,7 +35,7 @@ router
 
 router
   .route('/logout')
-  .get();
+  .get(ctrlUser.logout);
 
 /* PROJECT Routes */
 
@@ -59,8 +59,8 @@ router
 
 router
   .route('/project/delete/:id')
-  .get()
-  .post();
+  .get(ctrlProject.confirmDelete)
+  .post(ctrlProject.doDelete);
 
 router
   .route('/project/byuser/:userid')

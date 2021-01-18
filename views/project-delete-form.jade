@@ -1,6 +1,8 @@
 h1= title
-  p #{name}, are you sure you want to permanently delete this project? 
+  p #{projectName}, are you sure you want to permanently delete this project? 
   p The project name is #{projectName}
+  p Tasks : #{tasks}
+  p Contributors : #{contributors}
   form(id="formUserDelete", method="post", action="")
     input(type="hidden", name="_id", id="_id", value="#{_id}")
     input(type="submit", value="Yes, please delete it!")

@@ -197,6 +197,13 @@ const doDelete = function(req, res) {
     } 
 };
 
+const logout = function (req, res) {
+    console.log("Logout");
+    clearSession(req.session, ()=> {
+        res.redirect('/');
+    }) 
+}
+
 var clearSession = function(session, callback){
     session.destroy();
     callback();
@@ -212,6 +219,6 @@ module.exports = {
     edit,
     doEdit,
     confirmDelete,
-    doDelete
-
+    doDelete,
+    logout
 }

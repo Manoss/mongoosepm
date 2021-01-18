@@ -24,7 +24,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //Session
 // Use the session middleware
-app.use(session({ secret: 'keyboard cat', resave: true, saveUninitialized: true, cookie: { maxAge: 60000 }}));
+app.use(session({ secret: 'keyboard cat', resave: true, saveUninitialized: true, cookie: { maxAge: 180000 }}));
 
 app.use('/', indexRouter);
 //app.use('/user', usersRouter);
