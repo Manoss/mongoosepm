@@ -34,7 +34,10 @@ var userSchema = new mongoose.Schema({
         type: String, 
         unique:true,
         required: true,
-        validate: emailValidator
+        validate: {
+            validator: emailValidator,
+            message: 'Not a valid Email'
+        }
     },
     createdOn: { type: Date, default: Date.now },
     modifiedOn: Date,
@@ -42,7 +45,8 @@ var userSchema = new mongoose.Schema({
 });
 
 function emailValidator (email) {
-    return email == [{validator: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gmi, msg: 'Not a valid email'}];
+    const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+    return regexEmail.test(email);
 }
 
 //const emailValidator = [{validator: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gmi, msg: 'Not a valid email'}];
