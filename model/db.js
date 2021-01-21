@@ -56,7 +56,10 @@ mongoose.model( 'User', userSchema );
     PROJECT SCHEMA
 ******************************************** */
 var projectSchema = new mongoose.Schema({
-    projectName: String,
+    projectName: {
+        type: String,
+        required: true
+    },
     createdOn: { type: Date, default: Date.now },
     modifiedOn: Date,
     createdBy: String,
@@ -71,6 +74,22 @@ projectSchema.statics.findByUserID = function (userid, callback) {
       {sort: 'modifiedOn'},
       callback);
 };
+
+projectSchema.path('projectName').validate(function (value, respond) {
+    User.find({projectName: value}, function(err, projects){
+        if (err){
+            console.log(err);
+            return respond(false);
+        }
+        console.log('Projects found: ' + projects.length);
+        if (projects.length) {
+            respond(false); // validation failed
+        }else{
+            respond(true); // validation passed
+        } 
+    })
+    
+}, 'Duplicate project')
 
 // Build the Project model
 mongoose.model( 'Project', projectSchema );
