@@ -49,8 +49,6 @@ function emailValidator (email) {
     return regexEmail.test(email);
 }
 
-//const emailValidator = [{validator: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gmi, msg: 'Not a valid email'}];
-
 // Build the User model
 mongoose.model( 'User', userSchema );
 
