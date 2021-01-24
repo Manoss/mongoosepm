@@ -75,21 +75,30 @@ projectSchema.statics.findByUserID = function (userid, callback) {
       callback);
 };
 
-projectSchema.path('projectName').validate(function (value, respond) {
-    User.find({projectName: value}, function(err, projects){
-        if (err){
-            console.log(err);
-            return respond(false);
-        }
-        console.log('Projects found: ' + projects.length);
-        if (projects.length) {
-            respond(false); // validation failed
-        }else{
-            respond(true); // validation passed
-        } 
-    })
-    
-}, 'Duplicate project')
+/**
+ * Find if a projectName exist
+ */
+
+projectSchema.path('projectName').validate({
+    validator: function (value) {
+        return new Promise(function (resolve, reject) {
+            Project.findOne({projectName: value}, function(err, project){
+                if (err){
+                    console.log(err);
+                    reject(new Error(err));
+                }
+                console.log('Projects found: ' + project);
+                if (project !== null) {
+                    resolve(false)
+                }else{
+                    resolve(true);
+                }            
+            })  
+
+        });
+    },
+    message: 'Duplicate project `{VALUE}`'
+});
 
 // Build the Project model
-mongoose.model( 'Project', projectSchema );
+const Project = mongoose.model( 'Project', projectSchema );
