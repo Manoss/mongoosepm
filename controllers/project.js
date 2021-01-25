@@ -29,7 +29,14 @@ const doCreate = function(req, res){
                     if(err.code===11000) {
                         res.redirect('/project/new?exists=true');
                     } else {
-                        res.redirect('/?error=true');
+                        res.render('project-form', {
+                            error: err,
+                            title: 'Create Project',
+                            projectName: req.body.ProjectName,
+                            contributors: req.body.Contributor,
+                            tasks: req.body.Task,
+                            buttonText: "Validate"
+                        });
                     }
                 } else {
                     // Success
@@ -136,7 +143,17 @@ const doEdit = function(req, res) {
                         if(!err){
                             console.log('Project updated: ' + req.body.ProjectName);
                             res.redirect( '/project/' + req.params.id );
-                        } 
+                        }else{
+                            res.render('project-form',{
+                                error: err.message,
+                                title: 'Edit profile',
+                                _id: req.params.id,
+                                projectName: req.body.ProjectName,
+                                contributors: req.body.Contributor,
+                                tasks: req.body.Task,
+                                buttonText: "Update"
+                            })
+                        }
                     });
                 } 
             }
