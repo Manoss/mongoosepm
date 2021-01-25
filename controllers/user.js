@@ -24,7 +24,13 @@ const doCreate = function(req, res){
                 if(err.code===11000) {
                     res.redirect('/user/new?exists=true');
                 } else {
-                    res.redirect('/?error=true');
+                    res.render('user-form', {
+                        title: 'Create user',
+                        error: err.message,
+                        name: req.body.FullName,
+                        email: req.body.Email,
+                        buttonText:'Join!'
+                    });
                 }
             } else {
                 // Success
@@ -137,6 +143,15 @@ const doEdit = function(req, res) {
                             req.session.user.name = req.body.FullName;
                             req.session.user.email = req.body.Email;
                             res.redirect( '/user' );
+                        }else{
+                            console.log(err);
+                            res.render('user-form', {
+                                title: 'Edit profile',
+                                error: err.message,
+                                name: req.body.FullName,
+                                email: req.body.Email,
+                                buttonText: "Update"
+                            });
                         } 
                     });
                 } 
