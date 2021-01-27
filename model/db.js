@@ -62,8 +62,12 @@ var projectSchema = new mongoose.Schema({
     },
     createdOn: { type: Date, default: Date.now },
     modifiedOn: Date,
-    createdBy: String,
-    contributors: String,
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId, ref: 'User'
+    },
+    contributors: [{
+        type: mongoose.Schema.Types.ObjectId, ref: 'User'
+    }],
     tasks: String
 });
 

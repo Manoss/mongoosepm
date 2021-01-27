@@ -19,7 +19,8 @@ const doCreate = function(req, res){
     }else{
         Project.create({
             projectName: req.body.ProjectName,
-            contributors: req.body.Contributor,
+            //contributors: req.body.Contributor,
+            contributors: req.session.user._id,
             tasks: req.body.Task,
             createdBy: req.session.user._id,
             modifiedOn : Date.now()
@@ -77,21 +78,27 @@ const displayInfo = function(req, res) {
         res.redirect('/login');
     }else{
         if (req.params.id) {
-            Project.findById( req.params.id, function(err,project) {
-                if(err){
-                    console.log(err);
-                    res.redirect('/project?404=project');
-                }else{
-                    console.log(project);
-                    res.render('project-page', {
-                        title: project.projectName,
-                        projectName: project.projectName,
-                        tasks: project.tasks,
-                        createdBy: project.createdBy,
-                        projectID: req.params.id
-                    }); 
-                }
-            }); 
+            //Project.findById( req.params.id, function(err,project) {
+            Project
+                .findById(req.params.id)
+                .populate('createdBy', 'name email')
+                .populate('contributors', 'name email')
+                .exec(function(err, project){
+                    if(err){
+                        console.log(err);
+                        res.redirect('/project?404=project');
+                    }else{
+                        console.log(project);
+                        res.render('project-page', {
+                            title: project.projectName,
+                            projectName: project.projectName,
+                            tasks: project.tasks,
+                            createdBy: project.createdBy.name,
+                            projectID: req.params.id,
+                            contributors: project.contributors
+                        }); 
+                    }
+                }); 
         }else{
             res.redirect('/user');
         }
