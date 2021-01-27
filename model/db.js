@@ -53,6 +53,32 @@ function emailValidator (email) {
 mongoose.model( 'User', userSchema );
 
 /* ********************************************
+    TASK SCHEMA
+******************************************** */
+var taskSchema = new mongoose.Schema({
+    taskName: {
+        type: String,
+        required: true,
+        minlength: 5
+    },
+    taskDesc: String,
+    createdOn: { 
+        type: Date, 
+        default: Date.now 
+    },
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }, 
+    modifiedOn: Date,
+    assignedTo: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }
+});
+
+
+/* ********************************************
     PROJECT SCHEMA
 ******************************************** */
 var projectSchema = new mongoose.Schema({
@@ -68,7 +94,7 @@ var projectSchema = new mongoose.Schema({
     contributors: [{
         type: mongoose.Schema.Types.ObjectId, ref: 'User'
     }],
-    tasks: String
+    tasks: [taskSchema]
 });
 
 projectSchema.statics.findByUserID = function (userid, callback) {

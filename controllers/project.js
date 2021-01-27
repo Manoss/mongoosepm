@@ -210,7 +210,6 @@ const doDelete = function(req, res) {
     } 
 };
 
-
 // GET Project page
 const index = function (req, res) {
     res.render('project-page')
