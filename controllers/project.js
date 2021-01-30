@@ -21,7 +21,7 @@ const doCreate = function(req, res){
             projectName: req.body.ProjectName,
             //contributors: req.body.Contributor,
             contributors: req.session.user._id,
-            tasks: req.body.Task,
+            //tasks: req.body.Task,
             createdBy: req.session.user._id,
             modifiedOn : Date.now()
             }, function( err, project ){
@@ -35,7 +35,7 @@ const doCreate = function(req, res){
                             title: 'Create Project',
                             projectName: req.body.ProjectName,
                             contributors: req.body.Contributor,
-                            tasks: req.body.Task,
+                            //tasks: req.body.Task,
                             buttonText: "Validate"
                         });
                     }

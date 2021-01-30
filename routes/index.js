@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const ctrlUser = require('../controllers/user');
 const ctrlProject = require('../controllers/project')
+const ctrlTask = require('../controllers/task')
 
 router
   .route('/')
@@ -65,5 +66,11 @@ router
 router
   .route('/project/byuser/:userid')
   .get(ctrlProject.byUser)
+
+/** Task Route */
+router
+  .route('/task/new/:projectid')
+  .get(ctrlTask.create)
+  .post(ctrlTask.doCreate);
 
 module.exports = router;

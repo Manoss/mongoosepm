@@ -7,11 +7,15 @@ block content
       a(href="/user") User
   h2= projectName
   p Created by : #{createdBy}
-  p Tasks : #{tasks}
-  p Tasks: !{escape(tasks).replace(/\n/g, '<br/>')}
   
   if contributors !== null
     p Contributors
       ul
         each contributor in contributors
           li #{contributor.name} - #{contributor.email}
+  a(href="/task/new/#{projectID}") Add Task
+
+  h2 Tasks
+  each task in tasks
+    p Task Name : #{task.taskName}
+    p Task Description : #{task.taskDesc}

@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  h1= title
+  h2= error
+  ul
+  li
+    a(href="/user") User   
+  form(id="frmTaskProfile", method="post", action="")
+    p
+      label(for="TaskName") Task name
+      input(type="text", name="TaskName", id="TaskName", value="#{taskName}")
+    p
+      label(for="TaskDesc") Description
+      input(type="text", name="TaskDesc", id="TaskDesc", value="#{taskDesc}")
+    p
+      input(type="submit", value="#{buttonText}")
+
