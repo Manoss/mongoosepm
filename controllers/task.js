@@ -5,7 +5,7 @@ var Project = mongoose.model('Project');
  * Add Task
  ****************************************/
 
-const create = function(req, res){
+const createTask = function(req, res){
     res.render('task-form', {
         title: 'Create task',
         taskName: '',
@@ -15,7 +15,7 @@ const create = function(req, res){
 }
 
 // POST new project creation form
-const doCreate = function(req, res){
+const doCreateTask = function(req, res){
     if (req.session.loggedin !== true){
         res.redirect('/login');
     }else{

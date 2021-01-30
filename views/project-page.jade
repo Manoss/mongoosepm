@@ -21,3 +21,5 @@ block content
       each task in tasks
         li 
           a(href="/project/#{projectID}/task/edit/#{task._id}", title="#{task.taskDesc}") #{task.taskName}
+          span  |  
+          a(href="/project/#{projectID}/task/delete/#{task._id}") Delete

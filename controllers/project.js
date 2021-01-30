@@ -211,10 +211,57 @@ const doDelete = function(req, res) {
 };
 
 /*****************************************
+ * Add Task
+ ****************************************/
+
+const createTask = function(req, res){
+    res.render('task-form', {
+        title: 'Create task',
+        taskName: '',
+        taskDesc: '',
+        buttonText: "Validate"
+    });
+}
+
+// POST new task creation form
+const doCreateTask = function(req, res){
+    if (req.session.loggedin !== true){
+        res.redirect('/login');
+    }else{
+        Project.findById(req.params.projectid, 'tasks modifiedOn',
+            function( err, project ){
+                if(!err) {
+                    project.tasks.push({
+                        taskName: req.body.TaskName,
+                        taskDesc: req.body.TaskDesc,
+                        createdBy: req.session.user._id
+                    });
+                project.modifiedOn = Date.now();
+                project.save(function(err, project) {
+                    if(err) {
+                        console.log('Oh dear', err);
+                        res.render('task-form', {
+                            error: err,
+                            taskName: req.body.TaskName,
+                            taskDesc: req.body.TaskDesc,
+                            buttonText: "Validate"
+                        })
+                    } else {
+                        console.log('Task saved: ' + req.body.TaskName);
+                        res.redirect('/project/' + req.params.projectid);
+                    }
+                });
+                }
+            }
+        )
+    }
+};
+
+/*****************************************
  * Update Task
  ****************************************/
 
- // GET project edit form
+ // GET task edit form
  const editTask = function(req, res){
     if (req.session.loggedin !== true){
         res.redirect('/login');
@@ -271,6 +318,55 @@ const doEditTask = function(req, res) {
     };
 };
 
+/*****************************************
+ * Delete Task
+ ****************************************/
+
+// GET task delete confirmation form
+const confirmDeleteTask = function(req, res){
+    console.log("Project ID : " + req.params.id);
+    Project.findById(req.params.id, (err, project)=> {
+        if (!err) {
+            console.log("Project : " + project);
+            var thisTask = project.tasks.id(req.params.taskID)
+            res.render('task-delete-form', {
+                title: 'Delete task',
+                _id: thisTask._id,
+                taskName: thisTask.taskName
+            }); 
+        }else{
+            console.log("Error Delete task : " + err);
+            res.json(err);
+        }
+    });
+    
+};
+
+// POST task delete form
+const doDeleteTask = function(req, res) {
+    if (req.body._id) {
+        Project.findById(
+            req.params.id, 'tasks',
+            function (err, project) {
+                if(err){
+                    console.log(err);
+                    return res.redirect('/project?error=deleting');
+                }
+                project.tasks.id(req.params.taskID).remove();
+                project.save(function(err, project) {
+                    if(err) {
+                        console.log('Oh dear', err);
+                        return res.redirect('/task?error=deleting');
+                    }else{
+                        console.log('Task deleted');
+                        res.redirect('/project/' + req.params.id);
+                    }
+                });
+            }
+        );
+    } 
+};
+
 // GET Project page
 const index = function (req, res) {
     res.render('project-page')
@@ -286,6 +382,10 @@ module.exports = {
     doEdit,
     confirmDelete,
     doDelete,
+    createTask,
+    doCreateTask,
     editTask,
-    doEditTask
+    doEditTask,
+    confirmDeleteTask,
+    doDeleteTask
 }

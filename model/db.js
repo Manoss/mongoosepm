@@ -3,7 +3,7 @@ var mongoose = require( 'mongoose' );
 // Build the connection string
 var dbURI = 'mongodb://localhost/MongoosePM';
 // Create the database connection
-mongoose.connect(dbURI, {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true});
+mongoose.connect(dbURI, {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: true});
 
 mongoose.connection.on('connected', function () {
     console.log('Mongoose connected to ' + dbURI);
