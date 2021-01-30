@@ -1,6 +1,10 @@
 var mongoose = require('mongoose');
 var Project = mongoose.model('Project');
 
+/*****************************************
+ * Add Task
+ ****************************************/
+
 const create = function(req, res){
     res.render('task-form', {
         title: 'Create task',

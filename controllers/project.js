@@ -210,6 +210,67 @@ const doDelete = function(req, res) {
     } 
 };
 
+/*****************************************
+ * Update Task
+ ****************************************/
+
+ // GET project edit form
+ const editTask = function(req, res){
+    if (req.session.loggedin !== true){
+        res.redirect('/login');
+    }else{
+        Project.findById(req.params.id, function(err, project){
+            if(err){
+                console.log(err);
+                res.redirect('/project?404=project');
+            }else{
+                var thisTask = project.tasks.id(req.params.taskID);
+                res.render('task-form', {
+                    title: 'Edit profile',
+                    _id: req.params.taskID,
+                    taskName: thisTask.taskName,
+                    taskDesc: thisTask.taskDesc,
+                    buttonText: "Update"
+                });
+            }     
+        })
+        
+    }
+};
+
+const doEditTask = function(req, res) {
+    if (req.params.id) {
+        Project.findById(req.params.id, 'tasks modifiedOn',
+            function (err, project) {
+                if(err){
+                    console.log(err);
+                    res.redirect( '/project?error=finding');
+                } else {
+                    var thisTask = project.tasks.id(req.params.taskID)
+                        thisTask.taskName = req.body.TaskName,
+                        thisTask.taskDesc = req.body.TaskDesc
+                    
+                        project.modifiedOn = Date.now();
+                project.save(function(err, project) {
+                    if(err) {
+                        console.log('Oh dear', err);
+                        res.render('task-form', {
+                            error: err,
+                            taskName: req.body.TaskName,
+                            taskDesc: req.body.TaskDesc,
+                            buttonText: "Validate"
+                        })
+                    }else{
+                        console.log('Task updated: ' + req.body.TaskName);
+                        res.redirect('/project/' + req.params.id);
+                    }
+                    });
+                } 
+            }
+        ); 
+    };
+};
+
 // GET Project page
 const index = function (req, res) {
     res.render('project-page')
@@ -224,5 +285,7 @@ module.exports = {
     edit,
     doEdit,
     confirmDelete,
-    doDelete
+    doDelete,
+    editTask,
+    doEditTask
 }

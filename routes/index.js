@@ -67,6 +67,11 @@ router
   .route('/project/byuser/:userid')
   .get(ctrlProject.byUser)
 
+router
+  .route('/project/:id/task/edit/:taskID')
+  .get(ctrlProject.editTask)
+  .post(ctrlProject.doEditTask)
+
 /** Task Route */
 router
   .route('/task/new/:projectid')

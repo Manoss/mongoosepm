@@ -14,8 +14,10 @@ block content
         each contributor in contributors
           li #{contributor.name} - #{contributor.email}
   a(href="/task/new/#{projectID}") Add Task
-
-  h2 Tasks
-  each task in tasks
-    p Task Name : #{task.taskName}
-    p Task Description : #{task.taskDesc}
+  
+  if tasks.length > 0
+    h2 Tasks
+    ul
+      each task in tasks
+        li 
+          a(href="/project/#{projectID}/task/edit/#{task._id}", title="#{task.taskDesc}") #{task.taskName}
